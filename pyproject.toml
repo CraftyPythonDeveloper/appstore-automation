@@ -1,0 +1,22 @@
+[project]
+name = "appstore-automation"
+version = "0.1.0"
+description = "Add your description here"
+author = "Amit Yadav"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "amazoncaptcha>=0.5.11",
+    "bs4>=0.0.2",
+    "openpyxl>=3.1.5",
+    "pandas>=2.2.3",
+    "pyotp>=2.8.0",
+    "pyqt5>=5.15.9",
+    "requests>=2.30.0",
+    "seleniumbase>=4.14.9",
+]
+
+[dependency-groups]
+dev = [
+    "pyqt5-tools>=5.15.9.3.3",
+]
