@@ -1,0 +1,1 @@
+Connects the UI to the Selenium automation logic (controllers/ui_controller.py

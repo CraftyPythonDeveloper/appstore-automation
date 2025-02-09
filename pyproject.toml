@@ -6,17 +6,25 @@ author = "Amit Yadav"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "amazoncaptcha>=0.5.11",
+    "2captcha-python>=1.5.1",
+    "amazoncaptcha",
     "bs4>=0.0.2",
     "openpyxl>=3.1.5",
     "pandas>=2.2.3",
+    "pillow==9.5.0",
+    "pydantic-settings>=2.7.1",
     "pyotp>=2.8.0",
     "pyqt5>=5.15.9",
     "requests>=2.30.0",
-    "seleniumbase>=4.14.9",
+    "seleniumbase==4.33.12",
 ]
 
 [dependency-groups]
 dev = [
+    "jupyter>=1.1.1",
+    "notebook>=7.1.3",
     "pyqt5-tools>=5.15.9.3.3",
 ]
+
+[tool.uv.sources]
+amazoncaptcha = { git = "https://github.com/CraftyPythonDeveloper/amazoncaptcha.git" }
