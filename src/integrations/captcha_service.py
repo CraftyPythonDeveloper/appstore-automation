@@ -1,10 +1,10 @@
 import json
 import os
 from pathlib import Path
+from amazoncaptcha import AmazonCaptcha
 from config.settings import settings
-from utils.logger import get_logger
+from utils.logger import logger
 
-logger = get_logger()
 
 def get_captcha_extension():
     logger.debug("Getting captcha extension path")
@@ -26,3 +26,9 @@ def get_captcha_extension():
 
     logger.debug(f"Captcha extension path is {captcha_ext_path}")
     return captcha_ext_path
+
+
+def solve_text_captcha(link):
+    captcha = AmazonCaptcha.fromlink(link)
+    text = captcha.solve(keep_logs=True)
+    return text

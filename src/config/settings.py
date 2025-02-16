@@ -1,5 +1,6 @@
 from pathlib import Path
-from pydantic_settings  import BaseSettings
+from pydantic_settings import BaseSettings
+
 
 class AppConfig(BaseSettings):
 
@@ -12,5 +13,5 @@ class AppConfig(BaseSettings):
         env_file = "config/.env"
         env_file_encoding = 'utf-8'
 
+
 settings = AppConfig()
-print(settings.__dict__)

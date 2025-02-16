@@ -1,16 +1,17 @@
 from seleniumbase import Driver
-
+from automation.pages.base_page import BasePage
 from integrations.captcha_service import get_captcha_extension
 from integrations.proxy_service import get_proxy_details
 
 
-class BaseDriver:
+class BaseDriver(BasePage):
     def __init__(self):
         """
         Initializes the BaseDriver with configuration options.
 
         """
         self.driver = None
+        super().__init__()
 
     def get_driver(self, enable_captcha_solver=True, enable_proxy=False, **driver_options):
         """
@@ -25,6 +26,8 @@ class BaseDriver:
             driver_options["proxy"] = get_proxy_details()
 
         self.driver = Driver(browser="chrome", **driver_options)
+        self.driver.maximize_window()
+        self.random_sleep(5, 10)
 
         return self.driver
 

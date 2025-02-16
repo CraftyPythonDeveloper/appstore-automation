@@ -1,7 +1,5 @@
 from exceptions.base_exceptions import BadResponseException
-from utils.logger import get_logger
-
-logger = get_logger()
+from utils.logger import logger
 
 
 class OnlineSimBadResponseException(BadResponseException):
