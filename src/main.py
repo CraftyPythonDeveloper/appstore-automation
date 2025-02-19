@@ -21,6 +21,7 @@ if __name__ == "__main__":
 
         try:
             name, phone_number, password, totp = amazon_account_creation_flow.run()
+            amazon_account_creation_flow.cleanup()
         except Exception as e:
             amazon_account_creation_flow.cleanup()
             logger.error("Something went wrong while creating the Amazon account")
@@ -29,7 +30,7 @@ if __name__ == "__main__":
 
         try:
             write_to_csv(name, phone_number, password, totp)
-            logger.info(f"Finished Amazon Account with the name {name} phone number {phone_number}!!")
+            logger.info(f"Finished Amazon Account with the name {name} phone number {phone_number}")
 
         except Exception as e:
             logger.error(
