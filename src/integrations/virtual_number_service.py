@@ -1,4 +1,5 @@
 import random
+from time import sleep
 
 import requests
 from config.settings import settings
@@ -111,3 +112,16 @@ class OnlineSimService:
 
         # randomly pick any 3 lowest price countries
         return random.choice(sorted_country_code[:5])
+
+    def get_message_with_wait(self, tzid=None, max_wait: int = 20):
+        for i in range(max_wait):  # check every second until 20 second
+            otp = self.get_message(tzid=tzid)
+
+            if otp is not None:
+                logger.debug("Received OTP: {}".format(otp))
+                return otp
+
+            sleep(1)
+
+        logger.info(f"Did not receive otp in 30 seconds")
+        return None

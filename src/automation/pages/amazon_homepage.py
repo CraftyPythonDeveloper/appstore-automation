@@ -1,3 +1,4 @@
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from utils.logger import logger
@@ -48,7 +49,11 @@ class AmazonHomePage(BasePage):
         return signup_url
 
     def check_captcha(self):
-        captcha = self.driver.find_element(By.TAG_NAME, "h4")
-        if captcha and "Enter the characters you see" in captcha.text:
-            return True
+        try:
+            captcha = self.driver.find_element(By.TAG_NAME, "h4")
+            if captcha and "Enter the characters you see" in captcha.text:
+                return True
+        except NoSuchElementException:
+            pass
+
         return False

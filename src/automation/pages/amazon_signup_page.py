@@ -12,7 +12,8 @@ class AmazonSignupPageLocators:
     SUBMIT_BUTTON = "#continue"
     VERIFICATION_CODE_INPUT = "#cvf-input-code"
     SUBMIT_VERIFICATION = "//input[@aria-label='Verify OTP Button']"
-    RESEND_VERIFICATION = "#cvf-resend-link"
+    RESEND_VERIFICATION = "cvf-resend-link"
+    EXISTING_ACCOUNT_MSG = "//h4[text()='Mobile number already in use']"
 
 
 class AmazonSignupPage(BasePage):
@@ -80,5 +81,14 @@ class AmazonSignupPage(BasePage):
 
     def resend_otp(self):
         self.random_sleep()
-        self.driver.find_element(By.XPATH, AmazonSignupPageLocators.RESEND_VERIFICATION).click()
+        self.driver.find_element(By.ID, AmazonSignupPageLocators.RESEND_VERIFICATION).click()
         logger.info(f"Resent verification code")
+
+    def does_account_already_exists(self):
+        self.random_sleep()
+        try:
+            self.driver.find_element(By.XPATH, AmazonSignupPageLocators.EXISTING_ACCOUNT_MSG)
+            logger.info(f"Account is already registered!")
+            return True
+        except:
+            return False

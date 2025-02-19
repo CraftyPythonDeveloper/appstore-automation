@@ -1,10 +1,12 @@
+import csv
 import os
+import pyotp
+from faker import Faker
+
 from config.settings import settings
 from utils.logger import logger
 
-
-class CountryCodeMapping:
-    canada = 1
+fake = Faker()
 
 
 def join_paths(*args: str):
@@ -17,9 +19,35 @@ def get_temp_path():
     return temp_path
 
 
-def get_country_code(country: str):
-    country = country.lower()
-    if not hasattr(CountryCodeMapping, country):
-        logger.error(f"Country code {country} is not available in country mapping")
-        return None
-    return getattr(CountryCodeMapping, country)
+def get_2fa_code(totp_secret: str):
+    totp_secret = totp_secret
+    return pyotp.TOTP(totp_secret).now()
+
+
+def get_fake_name():
+    """
+    Generate a random fake name
+    :return:
+    """
+    return fake.name()
+
+
+def get_fake_password():
+    """
+    Generate a random password
+    :return:
+    """
+    return fake.password(length=12, special_chars=True, digits=True, upper_case=True, lower_case=True)
+
+
+def write_to_csv(name, phone_number, password, totp):
+    filename = join_paths("accounts.csv")
+    file_exists = os.path.exists(filename)
+
+    with open(filename, mode='a', newline='') as file:
+        writer = csv.writer(file)
+
+        if not file_exists:
+            writer.writerow(["Name", "Phone Number", "Password", "TOTP"])
+
+        writer.writerow([name, phone_number, password, totp])
