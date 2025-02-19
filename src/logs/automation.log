@@ -1,0 +1,5 @@
+2025-02-09 23:39:21,728 - DEBUG - captcha_service.py:10 - Getting captcha extension path
+2025-02-09 23:59:18,978 - DEBUG - captcha_service.py:10 - Getting captcha extension path
+2025-02-09 23:59:18,978 - DEBUG - captcha_service.py:26 - Captcha extension path is C:\Users\Amit\PycharmProjects\appstore-automation\src\integrations\nopecha
+2025-02-10 00:00:27,124 - DEBUG - captcha_service.py:10 - Getting captcha extension path
+2025-02-10 00:00:27,124 - DEBUG - captcha_service.py:26 - Captcha extension path is C:\Users\Amit\PycharmProjects\appstore-automation\src\integrations\nopecha
