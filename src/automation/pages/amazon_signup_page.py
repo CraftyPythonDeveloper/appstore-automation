@@ -5,42 +5,56 @@ from automation.pages.base_page import BasePage
 
 
 class AmazonSignupPageLocators:
+    NEW_ACCOUNT_BTN = "#createAccountSubmit"
+    EMAIL_INPUT = "#ap_email"
     USERNAME_INPUT = "#ap_customer_name"
     PASSWORD_INPUT = "#ap_password"
     PASSWORD_CHECK_INPUT = "#ap_password_check"
-    PHONE_NUMBER_INPUT = "#ap_email"
+    PHONE_NUMBER_INPUT = "#cvfPhoneNumber"
+    COUNTRY_DROPDOWN = "//span[@class='a-button-text a-declarative']"
     SUBMIT_BUTTON = "#continue"
     VERIFICATION_CODE_INPUT = "#cvf-input-code"
     SUBMIT_VERIFICATION = "//input[@aria-label='Verify OTP Button']"
     RESEND_VERIFICATION = "cvf-resend-link"
     EXISTING_ACCOUNT_MSG = "//h4[text()='Mobile number already in use']"
+    SUBMIT_PHONE_NUMBER = "//input[@type='submit']"
 
 
 class AmazonSignupPage(BasePage):
-    def __init__(self, driver, signup_url):
+    def __init__(self, driver):
         self.driver = driver
-        self.signup_url = signup_url
         super().__init__()
+    #
+    # def load_page(self):
+    #     self.random_sleep()
+    #     logger.debug("Loading amazon signup page")
+    #     self.driver.get(self.signup_url)
+    #     logger.debug("Amazon signup page loaded successfully")
 
-    def load_page(self):
+    def enter_email(self, email):
+        """
+        step 1
+        :param email:
+        :return:
+        """
         self.random_sleep()
-        logger.debug("Loading amazon signup page")
-        self.driver.get(self.signup_url)
-        logger.debug("Amazon signup page loaded successfully")
+        logger.debug(f"Typing email {email}")
+        self.start_typing(AmazonSignupPageLocators.EMAIL_INPUT, email)
+        logger.debug(f"Done typing email {email}")
 
     def enter_name(self, username):
         self.random_sleep()
         logger.debug(f"Typing username {username}")
-        self.driver.type(AmazonSignupPageLocators.USERNAME_INPUT, username)
+        self.start_typing(AmazonSignupPageLocators.USERNAME_INPUT, username)
         logger.debug(f"Done entering username {username}")
 
     def enter_mobile_number(self, country_name, phone_number):
         self.random_sleep()
         logger.debug(f"Typing mobile number {phone_number}")
-        self.driver.type(AmazonSignupPageLocators.PHONE_NUMBER_INPUT, phone_number)
+        self.start_typing(AmazonSignupPageLocators.PHONE_NUMBER_INPUT, phone_number)
         self.random_sleep()
         logger.debug(f"Done entering mobile number {phone_number}, selecting country {country_name}")
-        self.driver.find_element(By.XPATH, "//div[@class='a-section country-picker']").click()
+        self.driver.find_element(By.XPATH, AmazonSignupPageLocators.COUNTRY_DROPDOWN).click()
         self.random_sleep()
         country_dropdown = self.driver.find_elements(By.TAG_NAME, "a")
         for element in country_dropdown:
@@ -54,19 +68,25 @@ class AmazonSignupPage(BasePage):
     def enter_password(self, password):
         self.random_sleep()
         logger.debug(f"Typing password {password}")
-        self.driver.type(AmazonSignupPageLocators.PASSWORD_INPUT, password)
+        self.start_typing(AmazonSignupPageLocators.PASSWORD_INPUT, password)
         self.random_sleep()
-        self.driver.type(AmazonSignupPageLocators.PASSWORD_CHECK_INPUT, password)
+        self.start_typing(AmazonSignupPageLocators.PASSWORD_CHECK_INPUT, password)
         logger.debug(f"Done entering password {password}")
 
     def submit_form(self):
         self.random_sleep()
         self.driver.click(AmazonSignupPageLocators.SUBMIT_BUTTON)
 
-    def fill_signup_form(self, name, password, phone_number, country_name):
+    def submit_phone_number(self):
+        self.random_sleep()
+        self.driver.click(AmazonSignupPageLocators.SUBMIT_PHONE_NUMBER, "xpath")
+        self.random_sleep()
+
+    def fill_signup_form(self, name, email, password, phone_number, country_name):
         logger.info(f"Filling signup form")
         self.enter_name(username=name)
-        self.enter_mobile_number(country_name=country_name, phone_number=phone_number)
+        self.enter_email(email=email)
+        # self.enter_mobile_number(country_name=country_name, phone_number=phone_number)
         self.enter_password(password=password)
         self.submit_form()
         logger.info(f"Done filling signup form")
@@ -74,7 +94,7 @@ class AmazonSignupPage(BasePage):
     def enter_otp(self, code):
         self.random_sleep()
         logger.info(f"Entering verification code")
-        self.driver.type(AmazonSignupPageLocators.VERIFICATION_CODE_INPUT, code)
+        self.start_typing(AmazonSignupPageLocators.VERIFICATION_CODE_INPUT, code)
         self.random_sleep()
         self.driver.find_element(By.XPATH, AmazonSignupPageLocators.SUBMIT_VERIFICATION).click()
         logger.info(f"Submitted verification code")
@@ -92,3 +112,14 @@ class AmazonSignupPage(BasePage):
             return True
         except:
             return False
+
+
+
+"""
+fill the signup form (name, email, password, confirm_password) => submit
+solve the captcha
+enter email otp
+enter phone number
+enter phone otp
+fill amazon registration form
+"""
