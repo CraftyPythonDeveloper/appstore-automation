@@ -24,7 +24,7 @@ class BasePage:
             by_selector = By.TAG_NAME
 
         if isinstance(elem, str):
-            elem = self.driver.find_element(by_selector)
+            elem = self.driver.find_element(by_selector, elem)
 
         action = ActionChains(self.driver)
         action.move_to_element(elem).click()
