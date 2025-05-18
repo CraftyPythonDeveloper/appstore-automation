@@ -1,5 +1,8 @@
 import csv
 import os
+
+import numpy as np
+import pandas as pd
 import pyotp
 from faker import Faker
 
@@ -9,8 +12,8 @@ from utils.logger import logger
 fake = Faker()
 
 
-def join_paths(*args: str):
-    return os.path.join(settings.WRK_DIR, *args)
+def join_paths(*args: str) -> str:
+    return str(os.path.join(settings.WRK_DIR, *args))
 
 
 def get_temp_path():
@@ -40,14 +43,28 @@ def get_fake_password():
     return fake.password(length=12, special_chars=True, digits=True, upper_case=True, lower_case=True)
 
 
-def write_to_csv(name, phone_number, password, totp):
-    filename = join_paths("accounts.csv")
-    file_exists = os.path.exists(filename)
+def read_from_excel():
+    filename = join_paths("accounts.xlsx")
+    if not os.path.exists(filename):
+        logger.error(f"File {filename} does not exist")
+        return []
 
-    with open(filename, mode='a', newline='') as file:
-        writer = csv.writer(file)
+    df = pd.read_excel(filename)
+    df = df.replace(np.nan, None)
+    df["status"] = df["status"].astype(str)
+    return df
 
-        if not file_exists:
-            writer.writerow(["Name", "Phone Number", "Password", "TOTP"])
 
-        writer.writerow([name, phone_number, password, totp])
+def write_to_excel(index, **kwargs):
+    filename = join_paths("accounts.xlsx")
+    df = pd.read_excel(filename)
+    row = df.iloc[index].to_dict()
+    for key, value in kwargs.items():
+        if key not in df.columns:
+            logger.error(f"Key {key} not found in dataframe columns")
+            continue
+        row[key] = value
+
+    df.iloc[index] = row
+    df.to_excel(filename, index=False)
+    return True

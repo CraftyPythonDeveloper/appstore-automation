@@ -8,35 +8,38 @@ from integrations.captcha_service import solve_text_captcha
 
 class AmazonHomePageSelectors:
     START_HERE = "//a[@aria-label='New to Amazon? Start here to create an account']"
+    CREATE_DEVELOPER_ACCOUNT_BTN = "Create Developer Account"
+    CREATE_ACCOUNT_BTN = "#createAccountSubmit"
+    CAPTCHA_IMAGE = "//img[contains(@src, 'https://images-na.ssl-images-amazon.com/captcha')]"
+    CAPTCHA_INPUT = "#captchacharacters"
+    SUBMIT_CAPTCHA = "//button[@type='submit']"
 
 
 class AmazonHomePage(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        self.homepage_url = "https://www.amazon.com"
+        self.homepage_url = "https://developer.amazon.com"
         super().__init__()
 
     def load_page(self):
         self.random_sleep()
-        logger.debug("Loading amazon Homepage")
+        logger.debug("Loading amazon Developer Homepage")
         self.driver.get(self.homepage_url)
 
         if self.check_captcha():
             logger.error("Captcha detected!")
-            img = self.driver.find_element(By.XPATH,
-                                      "//img[contains(@src, 'https://images-na.ssl-images-amazon.com/captcha')]")
+            img = self.driver.find_element(By.XPATH, AmazonHomePageSelectors.CAPTCHA_IMAGE)
             link = img.get_attribute("src")
             answer = solve_text_captcha(link)
-            print(answer)
-            self.driver.type("#captchacharacters", answer)
+            self.driver.type(AmazonHomePageSelectors.CAPTCHA_INPUT, answer)
             self.random_sleep()
-            self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
+            self.driver.find_element(By.XPATH, AmazonHomePageSelectors.SUBMIT_CAPTCHA).click()
 
         self.random_sleep()
         self.driver.switch_to_default_window()
-        logger.debug("Amazon Homepage loaded successfully")
+        logger.debug("Amazon Developer Homepage loaded successfully")
 
-    def get_signup_url(self):
+    def get_signup_page(self):
         self.random_sleep()
         logger.debug("Getting amazon account signup link")
         # Just to ensure the page loads correctly we need to refresh twice
@@ -44,9 +47,12 @@ class AmazonHomePage(BasePage):
         self.random_sleep()
         self.driver.refresh()
 
-        signup_url = self.driver.get_attribute(AmazonHomePageSelectors.START_HERE, "href", by="xpath")
-        logger.debug(f"Extracted signup link {signup_url}")
-        return signup_url
+        self.driver.click_link(AmazonHomePageSelectors.CREATE_DEVELOPER_ACCOUNT_BTN)
+        self.random_sleep()
+
+        self.driver.click(AmazonHomePageSelectors.CREATE_ACCOUNT_BTN)
+        self.random_sleep()
+        logger.debug(f"Signing up page is open now..")
 
     def check_captcha(self):
         try:
