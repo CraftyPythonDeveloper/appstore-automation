@@ -5,7 +5,7 @@ from utils.utils import read_from_excel, write_to_excel
 
 if __name__ == "__main__":
     df = read_from_excel()
-    df = df[df['status'].notnull()]
+    df = df[df['status'] == "None"]
     if df.empty:
         logger.info("No new accounts to create")
         exit(0)

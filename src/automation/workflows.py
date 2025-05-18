@@ -19,11 +19,12 @@ class AmazonAccountCreationWorkflow(BaseDriver):
         self.phone_number = phone_number
         self.totp_secret = None
         self.country = country or "canada"
-        self.driver = self.get_driver(enable_captcha_solver=True, enable_proxy=True)
+        self.driver = self.get_driver(enable_captcha_solver=False, enable_proxy=True)
+        self.email_service = None
 
     def run(self):
 
-        email_service = OutlookEmailService(username=self.email, password=self.outlook_password)
+        self.email_service = OutlookEmailService(username=self.email, password=self.outlook_password)
 
         home_page = AmazonHomePage(driver=self.driver)
         home_page.load_page()
@@ -43,7 +44,7 @@ class AmazonAccountCreationWorkflow(BaseDriver):
         # try 3 times to get otp
         logger.info(f"Waiting for email otp to arrive from amazon")
         for retry in range(3):
-            otp = email_service.get_amazon_message()
+            otp = self.email_service.get_amazon_message()
             # otp = online_sim.get_message_with_wait(tzid=tzid)
             if otp is not None:
                 break
@@ -99,3 +100,6 @@ class AmazonAccountCreationWorkflow(BaseDriver):
 
     def cleanup(self):
         self.quit_driver()
+
+        if self.email_service:
+            self.email_service.driver.quit()

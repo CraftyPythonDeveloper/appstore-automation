@@ -1,3 +1,5 @@
+import re
+
 from faker import Faker
 from utils.logger import logger
 from automation.pages.base_page import BasePage
@@ -39,7 +41,7 @@ class AmazonDevRegistrationPage(BasePage):
     def generate_address(self):
         pattern = r'^(?P<address_line1>.+)\n(?P<city>.+), (?P<state>[A-Z]{2}) (?P<postal_code>\d{5})$'
         for i in range(30):
-            match = re.match(pattern, faker.address())
+            match = re.match(pattern, self.faker.address())
             if match:
                 return match.groupdict()
 
@@ -103,7 +105,7 @@ class AmazonDevRegistrationPage(BasePage):
         self.driver.click(AmazonDevRegistrationPageLocators.SUBMIT_BTN)
         logger.info(f"Clicked Submit button")
 
-    def skip_verification():
+    def skip_verification(self):
         self.driver.click("#Ivv_later_btn")
 
     def fill_registration_form(

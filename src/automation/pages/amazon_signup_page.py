@@ -83,13 +83,31 @@ class AmazonSignupPage(BasePage):
         self.random_sleep()
 
     def fill_signup_form(self, name, email, password, phone_number, country_name):
-        logger.info(f"Filling signup form")
+        logger.info(f"Filling signup form, {name}, {email}, {password}, {phone_number}, {country_name}")
         self.enter_name(username=name)
         self.enter_email(email=email)
         # self.enter_mobile_number(country_name=country_name, phone_number=phone_number)
         self.enter_password(password=password)
         self.submit_form()
+        try:
+
+            existing_account = self.driver.find_element(By.XPATH, '//div[contains(text(), " but an account already exists with the email address")]')
+        except:
+            existing_account = None
+
+        if existing_account:
+            logger.info(f"Account already exists with the email address {email}")
+            self.signin(email=email, password=password)
+
         logger.info(f"Done filling signup form")
+
+    def signin(self, email, password):
+        self.driver.click('//a[contains(text(), "Sign in")]')
+        self.enter_email(email=email)
+        self.submit_form()
+        self.enter_password(password=password)
+        self.driver.click("#signInSubmit")
+
 
     def enter_otp(self, code):
         self.random_sleep()
@@ -113,13 +131,3 @@ class AmazonSignupPage(BasePage):
         except:
             return False
 
-
-
-"""
-fill the signup form (name, email, password, confirm_password) => submit
-solve the captcha
-enter email otp
-enter phone number
-enter phone otp
-fill amazon registration form
-"""
