@@ -8,7 +8,7 @@ from integrations.captcha_service import solve_text_captcha
 
 class AmazonHomePageSelectors:
     START_HERE = "//a[@aria-label='New to Amazon? Start here to create an account']"
-    CREATE_DEVELOPER_ACCOUNT_BTN = "Create Developer Account"
+    CREATE_DEVELOPER_ACCOUNT_BTN = "//a[@data-ld-append='SDRP_HP_H']"
     CREATE_ACCOUNT_BTN = "#createAccountSubmit"
     CAPTCHA_IMAGE = "//img[contains(@src, 'https://images-na.ssl-images-amazon.com/captcha')]"
     CAPTCHA_INPUT = "#captchacharacters"
@@ -18,7 +18,7 @@ class AmazonHomePageSelectors:
 class AmazonHomePage(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        self.homepage_url = "https://developer.amazon.com"
+        self.homepage_url = "https://sell.amazon.com/?ld=AZFSSOA_FTSELL-C&ref_=footer_soa"
         super().__init__()
 
     def load_page(self):
@@ -47,7 +47,7 @@ class AmazonHomePage(BasePage):
         self.random_sleep()
         self.driver.refresh()
 
-        self.driver.click_link(AmazonHomePageSelectors.CREATE_DEVELOPER_ACCOUNT_BTN)
+        self.driver.click(AmazonHomePageSelectors.CREATE_DEVELOPER_ACCOUNT_BTN)
         self.random_sleep()
 
         self.driver.click(AmazonHomePageSelectors.CREATE_ACCOUNT_BTN)

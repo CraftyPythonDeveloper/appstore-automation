@@ -21,8 +21,9 @@ class AmazonProfilePageSelectors:
 
 
 class AmazonProfilePage(BasePage):
-    def __init__(self, driver, password):
+    def __init__(self, driver, password, email_service):
         self.driver = driver
+        self.email_service = email_service
         self.password = password
         self.account_page_link = "https://www.amazon.com/gp/css/homepage.html?ref_=nav_AccountFlyout_ya"
         super().__init__()
@@ -36,6 +37,16 @@ class AmazonProfilePage(BasePage):
         self.submit_password()
         login_security = self.driver.find_element(By.XPATH, AmazonProfilePageSelectors.LOGIN_SECURITY)
         login_security.click()
+
+        try:
+            message = self.driver.find_element("#channelDetailsForOtp").text
+            if "For your security, we’ve sent the code" in message:
+                otp = self.email_service.get_verification_code()
+                self.driver.type("#input-box-otp", otp)
+                self.driver.click("//input[@aria-labelledby='cvf-submit-otp-button-announce']")
+        except:
+            pass
+
         self.submit_password()
 
     def submit_password(self):
@@ -45,7 +56,9 @@ class AmazonProfilePage(BasePage):
             self.random_sleep()
             self.driver.find_element(By.ID, AmazonProfilePageSelectors.PASSWORD_SUBMIT).click()
         except:     # just skip if there is no password to enter on a page.
-            pass
+            otp = self.email_service.get_amazon_message()
+
+
 
     def setup_mfa(self):
         self.random_sleep()

@@ -18,15 +18,15 @@ if __name__ == "__main__":
             email=row['outlook_email'], outlook_password=row['outlook_password']
         )
 
-        try:
-            name, phone_number, password, totp = amazon_account_creation_flow.run()
-            amazon_account_creation_flow.cleanup()
-        except Exception as e:
-            write_to_excel(index=idx, status="failed")
-            amazon_account_creation_flow.cleanup()
-            logger.error("Something went wrong while creating the Amazon account")
-            logger.debug(e)
-            continue
+        # try:
+        name, phone_number, password, totp = amazon_account_creation_flow.run()
+        amazon_account_creation_flow.cleanup()
+        # except Exception as e:
+        #     # write_to_excel(index=idx, status="failed")
+        #     amazon_account_creation_flow.cleanup()
+        #     logger.error("Something went wrong while creating the Amazon account")
+        #     logger.debug(e)
+        #     continue
 
         try:
             write_to_excel(index=idx, name=name, password=password, totp=totp, status="created")

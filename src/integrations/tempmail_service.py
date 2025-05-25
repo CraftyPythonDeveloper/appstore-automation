@@ -364,6 +364,27 @@ class OutlookEmailService:
 
         return None
 
+    def get_verification_code(self, wait_timeout: int = 60) -> dict | None:
+        self.random_sleep(5,10)
+
+        for i in range(wait_timeout):
+            latest_message = self.read_latest_message()
+            print(latest_message)
+            message_text = latest_message["content"]
+            # validate if it's aws message, then parse the otp
+            if "your verification code" in message_text:
+                match = re.search("your verification code is:\n(\d{6})", message_text)
+                try:
+                    otp = match.group(1)
+                    return otp
+                except AttributeError:
+                    pass
+
+            self.random_sleep(1, 2)
+            self.logger.info("No new messages, retrying...")
+
+        return None
+
 
     def close(self):
         """
