@@ -14,7 +14,7 @@ class AppConfig(BaseSettings):
     OXYLABS_IP: str = "pr.oxylabs.io"
     OXYLABS_PORT: int = 7777
 
-    NOPECHA_API_KEY: Optional[str]
+    NOPECHA_API_KEY: Optional[str] = None
 
     class Config:
         env_file = "config/.env"

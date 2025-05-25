@@ -19,7 +19,7 @@ class AmazonAccountCreationWorkflow(BaseDriver):
         self.phone_number = phone_number
         self.totp_secret = None
         self.country = country or "canada"
-        self.driver = self.get_driver(enable_captcha_solver=False, enable_proxy=False)
+        self.driver = self.get_driver(enable_captcha_solver=True, enable_proxy=False)
         self.email_service = None
 
     def run(self):
